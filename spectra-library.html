@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+</head>
+
+<body>
+  
+</body>
+
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectra Library - Bloom Tracking System</title>
+    <style>
+        :root {
+            --primary-green: #2d5016;
+            --secondary-green: #4a7c59;
+            --light-green: #8a9b68;
+            --accent-green: #6b8e23;
+            --earth-brown: #8b7355;
+            --sand: #d2b48c;
+            --cream: #f5f5dc;
+            --white: #ffffff;
+            --text-dark: #2c3e2c;
+            --text-light: #5d705d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--primary-green), var(--secondary-green));
+            color: var(--white);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(45, 80, 22, 0.3);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo::before {
+            content: "🌿";
+            margin-right: 0.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-right: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            color: var(--sand);
+        }
+        
+        .nav-links a.active {
+            color: var(--sand);
+            border-bottom: 2px solid var(--sand);
+        }
+        
+        .spectra-library {
+            padding: 3rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .library-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .library-header h1 {
+            color: var(--primary-green);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .library-header h1::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(to right, var(--light-green), var(--accent-green));
+            border-radius: 2px;
+        }
+        
+        .library-header p {
+            color: var(--text-light);
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        .plant-filter {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .filter-btn {
+            background-color: var(--white);
+            border: 2px solid var(--light-green);
+            color: var(--text-dark);
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--accent-green);
+            color: var(--white);
+            border-color: var(--accent-green);
+        }
+        
+        .plants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .plant-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 4px solid var(--light-green);
+        }
+        
+        .plant-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 16px rgba(0,0,0,0.12);
+        }
+        
+        .plant-image {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .plant-image::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, rgba(0,0,0,0.3), transparent);
+        }
+        
+        .plant-content {
+            padding: 1.5rem;
+        }
+        
+        .plant-name {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .plant-name h3 {
+            color: var(--primary-green);
+            font-size: 1.4rem;
+        }
+        
+        .plant-icon {
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .plant-scientific {
+            color: var(--earth-brown);
+            font-style: italic;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .plant-description {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .plant-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .detail-icon {
+            margin-right: 0.5rem;
+            color: var(--accent-green);
+        }
+        
+        .detail-label {
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
+        
+        .detail-value {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .view-details {
+            display: block;
+            text-align: center;
+            background-color: var(--accent-green);
+            color: var(--white);
+            padding: 0.7rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .view-details:hover {
+            background-color: var(--primary-green);
+        }
+        
+        .plant-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+        
+        .modal-content {
+            background-color: var(--white);
+            max-width: 1000px;
+            margin: 2rem auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .modal-header {
+            background: linear-gradient(to right, var(--primary-green), var(--secondary-green));
+            color: var(--white);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .modal-title .plant-icon {
+            margin-right: 0.8rem;
+            font-size: 2rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: var(--sand);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .plant-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .plant-section {
+            background-color: rgba(138, 155, 104, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border-left: 3px solid var(--light-green);
+        }
+        
+        .section-title {
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            font-size: 1.3rem;
+        }
+        
+        .section-title .icon {
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .section-content {
+            color: var(--text-dark);
+        }
+        
+        .section-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .section-content ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .section-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .info-table th, .info-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(138, 155, 104, 0.2);
+        }
+        
+        .info-table th {
+            background-color: rgba(138, 155, 104, 0.1);
+            color: var(--primary-green);
+            font-weight: 600;
+        }
+        
+        .calendar-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .calendar-table th, .calendar-table td {
+            padding: 0.8rem;
+            text-align: center;
+            border: 1px solid rgba(138, 155, 104, 0.3);
+        }
+        
+        .calendar-table th {
+            background-color: rgba(138, 155, 104, 0.1);
+            color: var(--primary-green);
+            font-weight: 600;
+        }
+        
+        footer {
+            background: linear-gradient(to right, var(--primary-green), var(--secondary-green));
+            color: var(--white);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: left;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--sand);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .footer-section h3::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--sand);
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: var(--sand);
+        }
+        
+        .copyright {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.7);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .plants-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .plant-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-body {
+                padding: 1rem;
+            }
+            
+            .plant-modal {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">Bloom Tracking System</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="alerts.html">Alerts</a></li>
+                <li><a href="identify.html">Plant Identification</a></li>
+                <li><a href="spectra-library.html" class="active">Spectra Library</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Spectra Library Section -->
+    <section class="spectra-library">
+        <div class="library-header">
+            <h1>Spectra Library</h1>
+            <p>A comprehensive library containing detailed information about hundreds of plants, their life cycles, and scientific and medical uses</p>
+        </div>
+        
+        <div class="plant-filter">
+            <button class="filter-btn active" data-filter="all">All Plants</button>
+            <button class="filter-btn" data-filter="vegetable">Vegetables</button>
+            <button class="filter-btn" data-filter="fruit">Fruits</button>
+            <button class="filter-btn" data-filter="herb">Herbs</button>
+        </div>
+        
+        <div class="plants-grid">
+            <!-- Tomato Plant -->
+            <div class="plant-card" data-category="vegetable">
+                <div class="plant-image" style="background-image: url('https://i.ibb.co/PGCR5xXC/IMG-20251005-WA0024.jpg');"></div>
+                <div class="plant-content">
+                    <div class="plant-name">
+                        <span class="plant-icon">🍅</span>
+                        <h3>Tomato</h3>
+                    </div>
+                    <div class="plant-scientific">Solanum lycopersicum</div>
+                    <div class="plant-description">
+                        Tomatoes are among the most widely cultivated and consumed crops worldwide. Botanically classified as fruits but used as vegetables in culinary practice, they play an essential role in agriculture, nutrition, medicine, and scientific research.
+                    </div>
+                    <div class="plant-details">
+                        <div class="detail-item">
+                            <span class="detail-icon">🌱</span>
+                            <div>
+                                <div class="detail-label">Life Cycle</div>
+                                <div class="detail-value">Perennial (grown annually)</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">🌡️</span>
+                            <div>
+                                <div class="detail-label">Temperature</div>
+                                <div class="detail-value">20-30°C</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">⏱️</span>
+                            <div>
+                                <div class="detail-label">Planting Season</div>
+                                <div class="detail-value">Spring - Summer</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">🏆</span>
+                            <div>
+                                <div class="detail-label">Global Production</div>
+                                <div class="detail-value">China leads</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="view-details" data-plant="tomato">View Details</a>
+                </div>
+            </div>
+            
+            <!-- Radish Plant -->
+            <div class="plant-card" data-category="vegetable">
+                <div class="plant-image" style="background-image: url('https://i.ibb.co/0pPXyVhW/IMG-20251005-WA0023.jpg');"></div>
+                <div class="plant-content">
+                    <div class="plant-name">
+                        <span class="plant-icon">🌶️</span>
+                        <h3>Radish</h3>
+                    </div>
+                    <div class="plant-scientific">Raphanus sativus</div>
+                    <div class="plant-description">
+                        Radish is a fast-growing root vegetable belonging to the mustard family. Cultivated globally, it features a rapid growth cycle and multiple health benefits for digestive and cardiovascular systems.
+                    </div>
+                    <div class="plant-details">
+                        <div class="detail-item">
+                            <span class="detail-icon">🌱</span>
+                            <div>
+                                <div class="detail-label">Life Cycle</div>
+                                <div class="detail-value">Annual or biennial</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">🌡️</span>
+                            <div>
+                                <div class="detail-label">Temperature</div>
+                                <div class="detail-value">10-18°C</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">⏱️</span>
+                            <div>
+                                <div class="detail-label">Growth Duration</div>
+                                <div class="detail-value">25-60 days</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">🌍</span>
+                            <div>
+                                <div class="detail-label">Native Origin</div>
+                                <div class="detail-value">Southeast Asia</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="view-details" data-plant="radish">View Details</a>
+                </div>
+            </div>
+            
+            <!-- Lettuce Plant -->
+            <div class="plant-card" data-category="vegetable">
+                <div class="plant-image" style="background-image: url('https://i.ibb.co/LdBBkTPN/IMG-20251005-WA0022.jpg');"></div>
+                <div class="plant-content">
+                    <div class="plant-name">
+                        <span class="plant-icon">🥬</span>
+                        <h3>Lettuce</h3>
+                    </div>
+                    <div class="plant-scientific">Lactuca sativa</div>
+                    <div class="plant-description">
+                        Lettuce is a common leafy vegetable used in salads. It prefers temperate climates and is cultivated in many regions worldwide. Contains important nutrients and vitamins.
+                    </div>
+                    <div class="plant-details">
+                        <div class="detail-item">
+                            <span class="detail-icon">🌱</span>
+                            <div>
+                                <div class="detail-label">Life Cycle</div>
+                                <div class="detail-value">Annual</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">🌡️</span>
+                            <div>
+                                <div class="detail-label">Temperature</div>
+                                <div class="detail-value">16-18°C</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">⏱️</span>
+                            <div>
+                                <div class="detail-label">Planting Season</div>
+                                <div class="detail-value">September - October</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">🏜️</span>
+                            <div>
+                                <div class="detail-label">Preferred Soil</div>
+                                <div class="detail-value">Fertile clayey</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="view-details" data-plant="lettuce">View Details</a>
+                </div>
+            </div>
+            
+            <!-- Pepper Plant -->
+            <div class="plant-card" data-category="vegetable">
+                <div class="plant-image" style="background-image: url('https://i.ibb.co/FLPRscg7/IMG-20251005-WA0021.jpg');"></div>
+                <div class="plant-content">
+                    <div class="plant-name">
+                        <span class="plant-icon">🫑</span>
+                        <h3>Pepper</h3>
+                    </div>
+                    <div class="plant-scientific">Capsicum annuum</div>
+                    <div class="plant-description">
+                        Pepper is an annual herbaceous plant belonging to the nightshade family. Comes in sweet and hot varieties, widely used in cooking and traditional medicine.
+                    </div>
+                    <div class="plant-details">
+                        <div class="detail-item">
+                            <span class="detail-icon">🌱</span>
+                            <div>
+                                <div class="detail-label">Life Cycle</div>
+                                <div class="detail-value">Annual (perennial in tropics)</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">🌡️</span>
+                            <div>
+                                <div class="detail-label">Temperature</div>
+                                <div class="detail-value">20-30°C</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">⏱️</span>
+                            <div>
+                                <div class="detail-label">Growth Duration</div>
+                                <div class="detail-value">60-120 days</div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">🌍</span>
+                            <div>
+                                <div class="detail-label">Native Origin</div>
+                                <div class="detail-value">Central & South America</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="view-details" data-plant="pepper">View Details</a>
+                </div>
+            </div>
+
+            <!-- Chile pepper  -->
+        <div class="plant-card" data-category="vegetable">
+            <div class="plant-image" style="background-image: url('https://i.ibb.co/XZXF6FhN/Whats-App-Image-2025-10-05-at-10-32-53-eed2edef.jpg');"></div>
+            <div class="plant-content">
+                <div class="plant-name">
+                    <span class="plant-icon">🌶️</span>
+                    <h3>Chile peppers </h3>
+                </div>
+                <div class="plant-scientific">Capsicum species</div>
+                <div class="plant-description">
+                    Chile peppers (Capsicum species) are among the most widely cultivated and consumed vegetables globally. They belong to the Solanaceae family and are native to the Americas, with a rich history spanning culinary, medicinal, and scientific domains.
+                </div>
+                <div class="plant-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🌱</span>
+                        <div>
+                            <div class="detail-label">Life Cycle</div>
+                            <div class="detail-value">Perennial (grown annually)</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🌡️</span>
+                        <div>
+                            <div class="detail-label">Temperature</div>
+                            <div class="detail-value">24–29°C (75–85°F)</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">⏱️</span>
+                        <div>
+                            <div class="detail-label">Planting Season</div>
+                            <div class="detail-value">Spring - Summer</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🏆</span>
+                        <div>
+                            <div class="detail-label">Global Production</div>
+                            <div class="detail-value">China leads</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="view-details" data-plant="Chile">View Details</a>
+            </div>
+        </div>
+
+        <!-- New Image -->
+        <div class="plant-card" data-category="vegetable">
+            <div class="plant-image" style="background-image: url('https://i.ibb.co/pBw30h7Y/gta.jpg');"></div>
+            <div class="plant-content">
+                <div class="plant-name">
+                    <span class="plant-icon">🥬</span>
+                    <h3>Red Russian Kale</h3>
+                </div>
+                <div class="plant-scientific">Brassica napus var. pabularia</div>
+                <div class="plant-description">
+                    Red Russian kale is a cold-hardy, nutrient-rich leafy green known for its tender leaves and striking purple veins. It has gained attention for its culinary and medicinal benefits and its role in space agriculture research.
+                </div>
+                <div class="plant-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🌱</span>
+                        <div>
+                            <div class="detail-label">Life Cycle</div>
+                            <div class="detail-value">Biennial (grown annually)</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🌡️</span>
+                        <div>
+                            <div class="detail-label">Temperature</div>
+                            <div class="detail-value">10-20°C</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">⏱️</span>
+                        <div>
+                            <div class="detail-label">Planting Season</div>
+                            <div class="detail-value">Early Spring - Late Summer</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🏆</span>
+                        <div>
+                            <div class="detail-label">Global Production</div>
+                            <div class="detail-value">North America & Europe</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="view-details" data-plant="RedRussianKale">View Details</a>
+            </div>
+        </div>
+        </div>
+
+    </section>
+
+    
+
+    <!-- Details Modal Window -->
+    <div id="plantModal" class="plant-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalPlantName"><span class="plant-icon">🍅</span> Tomato</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modalPlantContent" class="plant-sections">
+                    <!-- Content will be filled by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About the System</h3>
+                <p>Bloom Tracking System is an intelligent platform that uses satellite data and artificial intelligence to monitor vegetation changes and provide alerts to farmers and scientists.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="alerts.html">Alerts</a></li>
+                    <li><a href="identify.html">Plant Identification</a></li>
+                    <li><a href="spectra-library.html">Spectra Library</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li>Email: info@bloomtracker.com</li>
+                    <li>Phone: +1234567890</li>
+                    <li>Address: Science City, Innovation Street</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>© 2023 Bloom Tracking System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Plants Data
+        const plantsData = {
+            tomato: {
+                name: "Tomato",
+                icon: "🍅",
+                scientific: "Solanum lycopersicum",
+                content: `
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🌱</span> I. General Information</h3>
+                        <div class="section-content">
+                            <p><strong>Scientific name:</strong> Solanum lycopersicum</p>
+                            <p><strong>Family:</strong> Solanaceae (nightshade family)</p>
+                            <p><strong>Common names:</strong> Tomato, Garden Tomato</p>
+                            <p><strong>Origin:</strong> Western South America and Central America</p>
+                            <p><strong>Type:</strong> Perennial (commonly grown as an annual in most climates)</p>
+                            <p><strong>Plant type:</strong> Herbaceous, flowering plant</p>
+                            <p>Tomatoes are among the most widely cultivated and consumed crops worldwide. Botanically classified as fruits but used as vegetables in culinary practice, they play an essential role in agriculture, nutrition, medicine, and scientific research.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🌿</span> II. Botanical Description</h3>
+                        <div class="section-content">
+                            <ul>
+                                <li><strong>Root system:</strong> Deep taproot with fibrous lateral roots</li>
+                                <li><strong>Stem:</strong> Soft, green, hairy stem that becomes woody with age</li>
+                                <li><strong>Leaves:</strong> Pinnately compound, dark green, aromatic</li>
+                                <li><strong>Flowers:</strong> Yellow, star-shaped, self-pollinating</li>
+                                <li><strong>Fruits:</strong> Fleshy berries, varying in size, shape, and color (red, yellow, orange, purple, etc.)</li>
+                                <li><strong>Growth habit:</strong> Determinate (bushy, limited growth) or indeterminate (climbing, continuous growth)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🌾</span> III. Agricultural Cycle</h3>
+                        <div class="section-content">
+                            <h4>1. Land Preparation</h4>
+                            <p><strong>Soil:</strong> Well-drained, loamy, pH 6.0–6.8</p>
+                            <p><strong>Preparation:</strong> Plowing, harrowing, and addition of organic manure (20–30 tons/ha)</p>
+                            <p><strong>Irrigation:</strong> Drip irrigation is recommended for water efficiency</p>
+                            
+                            <h4>2. Seed Selection and Sowing</h4>
+                            <p><strong>Seed selection:</strong> High-yield, disease-resistant hybrid varieties</p>
+                            <p><strong>Nursery:</strong> Seeds are sown in seedbeds or trays</p>
+                            <p><strong>Germination:</strong> 5–10 days</p>
+                            <p><strong>Seedling age before transplanting:</strong> 25–35 days</p>
+                            
+                            <h4>3. Transplanting</h4>
+                            <p><strong>Spacing:</strong> 40–60 cm between plants, 80–100 cm between rows</p>
+                            <p><strong>Timing:</strong> When seedlings have 4–5 true leaves</p>
+                            <p><strong>Planting depth:</strong> Just enough to cover roots and part of the stem</p>
+                            
+                            <h4>4. Crop Maintenance</h4>
+                            <p><strong>Irrigation:</strong> Regular, especially during flowering and fruiting</p>
+                            <p><strong>Weeding:</strong> At least 2–3 times per season</p>
+                            <p><strong>Fertilization:</strong> NPK fertilizers (100–150 kg N, 50–80 kg P₂O₅, 50–100 kg K₂O per hectare)</p>
+                            <p><strong>Support:</strong> Stakes or trellises for indeterminate varieties</p>
+                            <p><strong>Pest and disease management:</strong> Monitor for aphids, whiteflies, and fungal infections (e.g., late blight, powdery mildew)</p>
+                            
+                            <h4>5. Flowering and Fruiting</h4>
+                            <p>Occurs 30–40 days after transplanting</p>
+                            <p>Pollination is mostly self-induced but can be assisted by wind or insects</p>
+                            
+                            <h4>6. Harvesting</h4>
+                            <p><strong>First harvest:</strong> 60–90 days after transplanting</p>
+                            <p><strong>Indicator:</strong> Fruit color changes from green to red/yellow depending on the variety</p>
+                            <p><strong>Yield:</strong> 30–80 tons/ha under optimal conditions</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🗺️</span> IV. Planting Locations and Regions</h3>
+                        <div class="section-content">
+                            <p>Tomatoes are cultivated worldwide, with major producers including:</p>
+                            <ul>
+                                <li>China – the largest global producer</li>
+                                <li>India – second-largest</li>
+                                <li>United States – mainly California and Florida</li>
+                                <li>Egypt, Italy, Spain, Turkey – leading producers in the Mediterranean region</li>
+                            </ul>
+                            
+                            <p><strong>Ideal conditions:</strong></p>
+                            <ul>
+                                <li><strong>Temperature:</strong> 20–30 °C (fruit set declines below 10 °C or above 35 °C)</li>
+                                <li><strong>Sunlight:</strong> 6–8 hours daily</li>
+                                <li><strong>Rainfall:</strong> 600–1200 mm annually; irrigation required in dry regions</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">📅</span> V. Planting Seasons</h3>
+                        <div class="section-content">
+                            <table class="calendar-table">
+                                <thead>
+                                    <tr>
+                                        <th>Climate Zone</th>
+                                        <th>Sowing Season</th>
+                                        <th>Transplanting</th>
+                                        <th>Harvest</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Temperate</td>
+                                        <td>Spring (Mar–Apr)</td>
+                                        <td>Late Spring (Apr–May)</td>
+                                        <td>Summer–Autumn</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tropical</td>
+                                        <td>Year-round (mainly Jun–Jul, Nov–Dec)</td>
+                                        <td>3–4 weeks after sowing</td>
+                                        <td>2–3 months later</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mediterranean</td>
+                                        <td>Late winter–early spring</td>
+                                        <td>Early spring</td>
+                                        <td>Late spring–summer</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p>In countries like Egypt and India, tomatoes are grown in 3–4 cycles per year (summer, autumn, winter, spring crops).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🔬</span> VI. Scientific and Industrial Uses</h3>
+                        <div class="section-content">
+                            <p>Tomatoes have diverse applications beyond culinary use:</p>
+                            
+                            <h4>1. Genetic and Plant Biology Research</h4>
+                            <ul>
+                                <li>Model organism for studies on fruit development and ripening</li>
+                                <li>Used in CRISPR-Cas9 gene editing</li>
+                                <li>Source of genes for stress tolerance, disease resistance, and carotenoid production</li>
+                            </ul>
+                            
+                            <h4>2. Food Industry</h4>
+                            <ul>
+                                <li>Processed into ketchup, sauces, paste, juice, and dried products</li>
+                                <li>Lycopene extracted as a natural food colorant (E160d)</li>
+                            </ul>
+                            
+                            <h4>3. Cosmetic and Biotech Applications</h4>
+                            <ul>
+                                <li>Lycopene and beta-carotene used in anti-aging and sun-protection products</li>
+                                <li>Tomato seed oil, rich in antioxidants, applied in skincare</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🩺</span> VII. Medicinal and Health Benefits</h3>
+                        <div class="section-content">
+                            <p>Tomatoes are rich in vitamins (A, C, K, B6), minerals (potassium, manganese), and antioxidants. Their health benefits include:</p>
+                            
+                            <h4>1. Antioxidant and Anti-Cancer Properties</h4>
+                            <ul>
+                                <li>Lycopene helps reduce the risk of prostate, lung, and stomach cancers</li>
+                                <li>Neutralizes free radicals and lowers oxidative stress</li>
+                            </ul>
+                            
+                            <h4>2. Cardiovascular Health</h4>
+                            <ul>
+                                <li>Lowers LDL cholesterol and blood pressure</li>
+                                <li>Improves circulation and endothelial function</li>
+                            </ul>
+                            
+                            <h4>3. Anti-Inflammatory and Immune Support</h4>
+                            <ul>
+                                <li>Vitamin C boosts immune function</li>
+                                <li>Reduces systemic inflammation</li>
+                            </ul>
+                            
+                            <h4>4. Skin and Eye Health</h4>
+                            <ul>
+                                <li>Beta-carotene and lycopene protect against UV damage</li>
+                                <li>Vitamin A supports vision and reduces risk of macular degeneration</li>
+                            </ul>
+                            
+                            <h4>5. Digestive and Metabolic Benefits</h4>
+                            <ul>
+                                <li>High fiber content aids digestion</li>
+                                <li>Low-calorie, hydrating, supports weight and blood sugar management</li>
+                            </ul>
+                            
+                            <h4>Key Phytochemicals in Tomatoes</h4>
+                            <table class="info-table">
+                                <thead>
+                                    <tr>
+                                        <th>Compound</th>
+                                        <th>Function</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Lycopene</td>
+                                        <td>Antioxidant, anti-cancer, cardiovascular protection</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Beta-carotene</td>
+                                        <td>Vitamin A precursor, eye health</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Chlorogenic acid</td>
+                                        <td>Anti-inflammatory, anti-diabetic</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Quercetin</td>
+                                        <td>Antiviral, anti-inflammatory</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Kaempferol</td>
+                                        <td>Anti-cancer, vascular health</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🧭</span> Summary</h3>
+                        <div class="section-content">
+                            <table class="info-table">
+                                <thead>
+                                    <tr>
+                                        <th>Aspect</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Scientific Name</td>
+                                        <td>Solanum lycopersicum</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Origin</td>
+                                        <td>South America</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Life cycle</td>
+                                        <td>Annual (commercial), perennial (native)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Best climate</td>
+                                        <td>Warm, sunny (20–30 °C)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Main uses</td>
+                                        <td>Food, medicine, cosmetics, research</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Health benefits</td>
+                                        <td>Antioxidant, anti-cancer, heart health, skin protection, immunity</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `
+            },
+            radish: {
+                name: "Radish",
+                icon: "🌶️",
+                scientific: "Raphanus sativus",
+                content: `
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🌱</span> 1. General Information</h3>
+                        <div class="section-content">
+                            <p><strong>Scientific Name:</strong> Raphanus sativus</p>
+                            <p><strong>Family:</strong> Brassicaceae (mustard family)</p>
+                            <p><strong>Plant Type:</strong> Root vegetable; annual or biennial</p>
+                            <p><strong>Origin:</strong> Likely originated in Southeast Asia; widely cultivated globally</p>
+                            <p><strong>Plant Height:</strong> 20–50 cm</p>
+                            <p><strong>Root Type:</strong> Fleshy, typically white, red, purple, or black, depending on the variety</p>
+                            <p><strong>Leaves:</strong> Broad, green, slightly rough, pinnately lobed</p>
+                            <p><strong>Flowers:</strong> Small, white to purple, four-petaled, arranged in racemes</p>
+                            <p><strong>Fruit:</strong> Silique (seed pod)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🌾</span> 2. Agricultural Cycle</h3>
+                        <div class="section-content">
+                            <h4>2.1 Growth Stages</h4>
+                            <ol>
+                                <li><strong>Germination:</strong> 3–7 days after sowing, depending on temperature</li>
+                                <li><strong>Seedling Stage:</strong> 2–3 weeks; first true leaves appear</li>
+                                <li><strong>Vegetative Growth:</strong> Leaves expand; root begins developing</li>
+                                <li><strong>Mature Root Development:</strong> 4–6 weeks after sowing for most varieties</li>
+                                <li><strong>Flowering & Seed Production:</strong> Optional, mainly for seed production; occurs after vernalization in biennial varieties</li>
+                            </ol>
+                            
+                            <h4>2.2 Duration</h4>
+                            <ul>
+                                <li><strong>Fast-growing types:</strong> 25–40 days (e.g., small red radishes)</li>
+                                <li><strong>Medium types:</strong> 45–60 days (for larger roots)</li>
+                                <li><strong>Biennial types:</strong> 6–7 months (used for seeds)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🗺️</span> 3. Planting Locations</h3>
+                        <div class="section-content">
+                            <p><strong>Soil:</strong> Well-drained loamy soil, sandy soil is preferred. pH 5.5–6.8</p>
+                            <p><strong>Climate:</strong> Cool-season crop; sensitive to extreme heat</p>
+                            <p><strong>Light:</strong> Full sun to partial shade</p>
+                            <p><strong>Irrigation:</strong> Moderate, keep soil consistently moist</p>
+                            <p><strong>Geographical Distribution:</strong> Globally cultivated; major producers include China, Japan, South Korea, USA, and India</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">📅</span> 4. Planting Seasons</h3>
+                        <div class="section-content">
+                            <ul>
+                                <li><strong>Spring/Summer Crop:</strong> Early spring to late summer</li>
+                                <li><strong>Fall/Winter Crop:</strong> Late summer to autumn in mild climates</li>
+                                <li><strong>Temperature Preferences:</strong> 10–18°C (50–65°F) for optimal growth</li>
+                                <li><strong>Succession Planting:</strong> Radishes are often planted every 10–15 days for continuous harvest</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🔬</span> 6. Scientific Uses</h3>
+                        <div class="section-content">
+                            <ul>
+                                <li><strong>Biochemical Studies:</strong> Radishes contain antioxidants, glucosinolates, and flavonoids, making them useful for nutritional and plant biology studies</li>
+                                <li><strong>Genetic Research:</strong> Used as a model for studying root development and stress responses</li>
+                                <li><strong>Food Science:</strong> Radish extracts studied for antibacterial, antifungal, and antioxidant properties</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🩺</span> 7. Medicinal Benefits</h3>
+                        <div class="section-content">
+                            <p>Radishes are widely used in traditional and modern medicine for their health benefits:</p>
+                            
+                            <h4>1. Digestive Health</h4>
+                            <ul>
+                                <li>Stimulates appetite</li>
+                                <li>Relieves bloating and constipation due to high fiber content</li>
+                            </ul>
+                            
+                            <h4>2. Detoxification</h4>
+                            <ul>
+                                <li>Helps cleanse the liver and kidneys</li>
+                                <li>Acts as a natural diuretic</li>
+                            </ul>
+                            
+                            <h4>3. Respiratory Health</h4>
+                            <ul>
+                                <li>Useful for cough, cold, and sinus congestion</li>
+                                <li>Black radish juice used for bronchitis and asthma in traditional medicine</li>
+                            </ul>
+                            
+                            <h4>4. Cardiovascular Health</h4>
+                            <ul>
+                                <li>Lowers blood pressure</li>
+                                <li>Reduces cholesterol levels due to antioxidant content</li>
+                            </ul>
+                            
+                            <h4>5. Anti-cancer Potential</h4>
+                            <ul>
+                                <li>Glucosinolates and sulforaphane may have protective effects against certain cancers</li>
+                            </ul>
+                            
+                            <h4>6. Skin Health</h4>
+                            <ul>
+                                <li>Radish extracts used in some herbal remedies for skin disorders and infections</li>
+                            </ul>
+                            
+                            <h4>7. Immune System Support</h4>
+                            <ul>
+                                <li>Rich in vitamin C, supporting immune defense</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">📊</span> 8. Nutritional Composition (per 100 g)</h3>
+                        <div class="section-content">
+                            <table class="info-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nutrient</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Calories</td>
+                                        <td>16 kcal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Carbohydrates</td>
+                                        <td>3.4 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fiber</td>
+                                        <td>1.6 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Protein</td>
+                                        <td>0.7 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vitamin C</td>
+                                        <td>18 mg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Folate</td>
+                                        <td>25 μg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Potassium</td>
+                                        <td>233 mg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Calcium</td>
+                                        <td>25 mg</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🧭</span> Summary</h3>
+                        <div class="section-content">
+                            <p>Radish is a fast-growing, cool-season root vegetable with multiple culinary, medicinal, and scientific applications. It thrives in well-drained, fertile soils and is harvested within 1–2 months for most varieties. Rich in antioxidants, fiber, and vitamins, radishes contribute to digestive, respiratory, cardiovascular, and skin health.</p>
+                        </div>
+                    </div>
+                `
+            },
+            lettuce: {
+                name: "Lettuce",
+                icon: "🥬",
+                scientific: "Lactuca sativa",
+                content: `
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🌱</span> General Information</h3>
+                        <div class="section-content">
+                            <p><strong>Scientific Name:</strong> Lactuca sativa</p>
+                            <p><strong>Family:</strong> Asteraceae (aster family)</p>
+                            <p><strong>Plant Type:</strong> Leafy vegetable; annual</p>
+                            <p><strong>Origin:</strong> Mediterranean region and Middle East</p>
+                            <p><strong>Plant Height:</strong> 15–30 cm</p>
+                            <p><strong>Leaves:</strong> Green, varying shapes depending on variety</p>
+                            <p><strong>Flowers:</strong> Small, yellow, composite</p>
+                            <p>Lettuce is a common leafy vegetable used in salads. It prefers temperate climates and is cultivated in many regions worldwide. Contains important nutrients and vitamins.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🌾</span> 1. Agricultural Cycle</h3>
+                        <div class="section-content">
+                            <p><strong>Optimal Planting Season:</strong> In Egypt, lettuce is typically planted from September to October, favoring cooler temperatures</p>
+                            <p><strong>Soil Requirements:</strong> Prefers fertile, clayey soils with a pH between 6.5 and 7. Organic compost is added before planting, along with chemical fertilizers like ammonium sulfate, superphosphate, and potassium sulfate</p>
+                            <p><strong>Irrigation Needs:</strong> Requires regular watering, with 8-10 irrigations totaling 10-12 inches of water per acre, depending on seasonal conditions and soil type</p>
+                            <p><strong>Planting Methods:</strong> Seeds can be sown directly in the field or started in a nursery and transplanted after 6-8 weeks</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🗺️</span> 2. Growing Locations</h3>
+                        <div class="section-content">
+                            <p>Lettuce thrives in temperate climates with temperatures between 16-18°C. It is cultivated worldwide, including regions like Egypt, the United States, China, and Europe.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🥗</span> 3. Lettuce Varieties</h3>
+                        <div class="section-content">
+                            <h4>Crisphead / Iceberg:</h4>
+                            <p>Dense, crunchy leaves, lower nutritional value but very common in salads and sandwiches</p>
+                            
+                            <h4>Romaine Lettuce:</h4>
+                            <p>Elongated, crunchy leaves, used in salads and sandwiches</p>
+                            
+                            <h4>Loose-leaf Lettuce:</h4>
+                            <p>Green or red leaves, does not form a head, used in salads</p>
+                            
+                            <h4>Butterhead Lettuce:</h4>
+                            <p>Soft, buttery leaves, forms a loose head</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🔬</span> 4. Scientific Uses</h3>
+                        <div class="section-content">
+                            <ul>
+                                <li><strong>Nutritional Research:</strong> Used in studies of nutritional value and the impact of cultivation methods on nutrient content</li>
+                                <li><strong>Genetic Studies:</strong> Serves as a model for studying leaf development and stress responses in leafy plants</li>
+                                <li><strong>Biotechnology:</strong> Development of hybrid varieties with higher disease resistance and better environmental tolerance</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🩺</span> 5. Medicinal Benefits</h3>
+                        <div class="section-content">
+                            <h4>1. Hydration and Nutritional Support</h4>
+                            <ul>
+                                <li>High water content helps hydrate the body</li>
+                                <li>Good source of vitamin K, vitamin A, and folate</li>
+                            </ul>
+                            
+                            <h4>2. Bone Health</h4>
+                            <ul>
+                                <li>Vitamin K is essential for bone health and blood clotting</li>
+                            </ul>
+                            
+                            <h4>3. Eye Health</h4>
+                            <ul>
+                                <li>Vitamin A and lutein improve eye health and vision</li>
+                            </ul>
+                            
+                            <h4>4. Sleep Improvement</h4>
+                            <ul>
+                                <li>Lettuce extracts have sedative effects and may help improve sleep</li>
+                            </ul>
+                            
+                            <h4>5. Antioxidants</h4>
+                            <ul>
+                                <li>Contains antioxidants that help reduce oxidative stress</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">📊</span> 6. Nutritional Composition (per 100 g)</h3>
+                        <div class="section-content">
+                            <table class="info-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nutrient</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Calories</td>
+                                        <td>15 kcal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Carbohydrates</td>
+                                        <td>2.9 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fiber</td>
+                                        <td>1.3 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Protein</td>
+                                        <td>1.4 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vitamin K</td>
+                                        <td>126 μg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vitamin A</td>
+                                        <td>7405 IU</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Folate</td>
+                                        <td>38 μg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vitamin C</td>
+                                        <td>9 mg</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `
+            },
+            pepper: {
+                name: "Pepper",
+                icon: "🫑",
+                scientific: "Capsicum annuum",
+                content: `
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🌱</span> 1. General Information</h3>
+                        <div class="section-content">
+                            <p><strong>Scientific Name:</strong> Capsicum annuum (common sweet and chili peppers)</p>
+                            <p><strong>Family:</strong> Solanaceae (nightshade family)</p>
+                            <p><strong>Plant Type:</strong> Annual herbaceous plant (perennial in tropical climates)</p>
+                            <p><strong>Origin:</strong> Central and South America</p>
+                            <p><strong>Plant Height:</strong> 30–100 cm, depending on variety</p>
+                            <p><strong>Leaves:</strong> Simple, ovate, glossy green</p>
+                            <p><strong>Flowers:</strong> White or purple, small, bell-shaped</p>
+                            <p><strong>Fruit:</strong> Berry, varying in color (green, red, yellow, orange, purple)</p>
+                            <p><strong>Varieties:</strong> Sweet bell peppers, hot chili peppers (Cayenne, Jalapeño, Habanero)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🌾</span> 2. Agricultural Cycle</h3>
+                        <div class="section-content">
+                            <h4>2.1 Growth Stages</h4>
+                            <ol>
+                                <li><strong>Seed Germination:</strong> 7–14 days at 20–30°C</li>
+                                <li><strong>Seedling Stage:</strong> 3–5 weeks; seedlings grow 5–10 cm before transplanting</li>
+                                <li><strong>Vegetative Growth:</strong> Leaves and stems develop; 4–6 weeks</li>
+                                <li><strong>Flowering:</strong> Begins 6–8 weeks after transplanting</li>
+                                <li><strong>Fruit Setting & Maturation:</strong> 6–12 weeks depending on variety</li>
+                                <li><strong>Harvesting:</strong> Fruits are harvested green or mature-colored; typically 60–90 days after transplanting</li>
+                            </ol>
+                            
+                            <h4>2.2 Duration</h4>
+                            <ul>
+                                <li><strong>Sweet peppers:</strong> 60–90 days to first harvest</li>
+                                <li><strong>Hot peppers:</strong> 70–120 days to mature fruit</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🗺️</span> 3. Planting Locations</h3>
+                        <div class="section-content">
+                            <p><strong>Soil:</strong> Well-drained loamy soil rich in organic matter; pH 6.0–7.0</p>
+                            <p><strong>Climate:</strong> Warm-season crop; sensitive to frost</p>
+                            <p><strong>Light:</strong> Full sun</p>
+                            <p><strong>Irrigation:</strong> Moderate, consistent moisture to prevent blossom-end rot</p>
+                            <p><strong>Geographical Distribution:</strong> Widely cultivated globally; main producers include China, Mexico, India, Turkey, and the USA</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">📅</span> 4. Planting Seasons</h3>
+                        <div class="section-content">
+                            <p><strong>Tropical/Subtropical Climates:</strong> Plant year-round with irrigation control</p>
+                            <p><strong>Temperate Climates:</strong></p>
+                            <ul>
+                                <li><strong>Indoors/Greenhouse:</strong> Sow seeds February–March</li>
+                                <li><strong>Transplant Outdoors:</strong> April–May after last frost</li>
+                                <li><strong>Harvest:</strong> Summer to early autumn</li>
+                            </ul>
+                            <p><strong>Temperature Preferences:</strong> Optimal 20–30°C; below 15°C slows growth; above 32°C may reduce fruit set</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🔬</span> 6. Scientific Uses</h3>
+                        <div class="section-content">
+                            <ul>
+                                <li><strong>Capsaicin Research:</strong> Active compound in hot peppers, studied for pain relief, anti-inflammatory, and metabolic effects</li>
+                                <li><strong>Nutritional Studies:</strong> High vitamin C content; antioxidant properties studied for health benefits</li>
+                                <li><strong>Agricultural Research:</strong> Breeding for disease resistance, yield, and flavor enhancement</li>
+                                <li><strong>Food Science:</strong> Extracts used for natural coloring, preservatives, and flavorings</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🩺</span> 7. Medicinal Benefits</h3>
+                        <div class="section-content">
+                            <h4>1. Pain Relief</h4>
+                            <ul>
+                                <li>Capsaicin creams reduce neuropathic pain and arthritis discomfort</li>
+                            </ul>
+                            
+                            <h4>2. Digestive Health</h4>
+                            <ul>
+                                <li>Stimulates gastric juices and improves digestion</li>
+                                <li>In moderate amounts, can boost metabolism</li>
+                            </ul>
+                            
+                            <h4>3. Cardiovascular Health</h4>
+                            <ul>
+                                <li>May improve blood circulation</li>
+                                <li>Can help lower cholesterol and triglycerides</li>
+                            </ul>
+                            
+                            <h4>4. Immune System Support</h4>
+                            <ul>
+                                <li>High vitamin C strengthens immunity</li>
+                                <li>Antioxidants protect against oxidative stress</li>
+                            </ul>
+                            
+                            <h4>5. Anti-inflammatory & Anti-cancer</h4>
+                            <ul>
+                                <li>Capsaicin and flavonoids studied for reducing inflammation</li>
+                                <li>Potential chemopreventive properties against certain cancers</li>
+                            </ul>
+                            
+                            <h4>6. Weight Management</h4>
+                            <ul>
+                                <li>Capsaicin increases thermogenesis and fat oxidation</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">📊</span> 8. Nutritional Composition (per 100 g, raw red pepper)</h3>
+                        <div class="section-content">
+                            <table class="info-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nutrient</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Calories</td>
+                                        <td>31 kcal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Carbohydrates</td>
+                                        <td>6 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fiber</td>
+                                        <td>2.1 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Protein</td>
+                                        <td>1 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vitamin C</td>
+                                        <td>127 mg (more than 100% DV)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vitamin A</td>
+                                        <td>3131 IU</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Potassium</td>
+                                        <td>211 mg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Folate</td>
+                                        <td>46 μg</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🧭</span> Summary</h3>
+                        <div class="section-content">
+                            <p>The pepper plant is a warm-season crop with wide culinary, medicinal, and scientific applications. It requires warm temperatures, well-drained soil, and consistent watering. Peppers are rich in vitamins, antioxidants, and capsaicin, contributing to pain relief, cardiovascular health, immune support, and digestive benefits. Sweet and hot peppers have different growth durations but similar cultural requirements.</p>
+                        </div>
+                    </div>
+                `
+            },
+            Chile: {
+                name: "Chile Pepper",
+                icon: "🌶️",
+                scientific: "Capsicum species",
+                content: `
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🌱</span> General Information</h3>
+                        <div class="section-content">
+                            <p><strong>Scientific Name:</strong> Capsicum species</p>
+                            <p><strong>Family:</strong> Solanaceae (nightshade family)</p>
+                            <p><strong>Plant Type:</strong> Fruit vegetable; perennial grown as annual</p>
+                            <p><strong>Origin:</strong> Americas</p>
+                            <p><strong>Plant Height:</strong> 30–150 cm depending on variety</p>
+                            <p><strong>Fruits:</strong> Varying colors (green, red, yellow, orange), shapes and heat levels</p>
+                            <p><strong>Flowers:</strong> Small, white, five-petaled</p>
+                            <p>Chile peppers are among the most widely cultivated and consumed vegetables globally. They belong to the Solanaceae family and are native to the Americas, with a rich history spanning culinary, medicinal, and scientific domains.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🌾</span> 1. Agricultural Cycle</h3>
+                        <div class="section-content">
+                            <p><strong>Optimal Planting Season:</strong> Chile peppers are typically started indoors 8–10 weeks before the last expected frost date. They are transplanted outdoors after the danger of frost has passed and when soil temperatures are consistently above 18°C (65°F).</p>
+                            <p><strong>Soil Requirements:</strong> Prefers well-drained, fertile soil with a pH of 6.0–6.8. Organic compost is added before planting, along with balanced fertilizers.</p>
+                            <p><strong>Irrigation Needs:</strong> Requires consistent moisture but overwatering should be avoided to prevent root rot. Drip irrigation is often recommended.</p>
+                            <p><strong>Growth Duration:</strong> From transplanting to harvest, chile peppers generally require 60–90 days, depending on the variety.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🗺️</span> 2. Growing Locations</h3>
+                        <div class="section-content">
+                            <p>Chile peppers are cultivated worldwide, with significant production in the United States (particularly in New Mexico, California, and Texas), Mexico, India, China, and increasingly in African countries like Nigeria and Kenya.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🌶️</span> 3. Chile Pepper Varieties</h3>
+                        <div class="section-content">
+                            <h4>Bell Peppers:</h4>
+                            <p>Mild, sweet peppers with zero Scoville heat units, available in various colors</p>
+                            
+                            <h4>Jalapeño:</h4>
+                            <p>Medium heat pepper (2,500-8,000 SHU), commonly used in salsas and Mexican cuisine</p>
+                            
+                            <h4>Habanero:</h4>
+                            <p>Very hot pepper (100,000-350,000 SHU), with distinctive floral and fruity notes</p>
+                            
+                            <h4>Cayenne:</h4>
+                            <p>Hot pepper (30,000-50,000 SHU), often dried and ground into powder</p>
+                            
+                            <h4>Serrano:</h4>
+                            <p>Hotter than jalapeño (10,000-23,000 SHU), commonly used in pico de gallo</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🔬</span> 4. Scientific Uses</h3>
+                        <div class="section-content">
+                            <ul>
+                                <li><strong>NASA Space Research:</strong> Chile peppers were grown on the International Space Station in the Plant Habitat-04 experiment, marking the first time peppers were grown from seeds to maturity in space</li>
+                                <li><strong>Medical Research:</strong> Capsaicin is studied for pain management, metabolic effects, and cardiovascular benefits</li>
+                                <li><strong>Genetic Studies:</strong> Used in research on capsaicinoid biosynthesis and heat tolerance mechanisms</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🩺</span> 5. Medicinal Benefits</h3>
+                        <div class="section-content">
+                            <h4>1. Pain Relief and Anti-inflammatory</h4>
+                            <ul>
+                                <li>Capsaicin has analgesic properties and is used in topical pain relievers</li>
+                                <li>Reduces inflammation and may help with arthritis pain</li>
+                            </ul>
+                            
+                            <h4>2. Metabolic and Cardiovascular Health</h4>
+                            <ul>
+                                <li>May boost metabolism and aid in weight management</li>
+                                <li>Supports cardiovascular health and may help reduce blood pressure</li>
+                            </ul>
+                            
+                            <h4>3. Antioxidant Properties</h4>
+                            <ul>
+                                <li>Rich in antioxidants that combat oxidative stress</li>
+                                <li>Contains vitamins A and C which support immune function</li>
+                            </ul>
+                            
+                            <h4>4. Digestive Health</h4>
+                            <ul>
+                                <li>May stimulate digestive juices and improve gut health</li>
+                                <li>Has antimicrobial properties that can fight intestinal pathogens</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">📊</span> 6. Nutritional Composition (per 100 g)</h3>
+                        <div class="section-content">
+                            <table class="info-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nutrient</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Calories</td>
+                                        <td>40 kcal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Carbohydrates</td>
+                                        <td>9 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fiber</td>
+                                        <td>1.5 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Protein</td>
+                                        <td>2 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vitamin C</td>
+                                        <td>144 mg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vitamin A</td>
+                                        <td>1,500 IU</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vitamin B6</td>
+                                        <td>0.3 mg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Iron</td>
+                                        <td>0.9 mg</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `
+            },
+            RedRussianKale: {
+                name: "Red Russian Kale",
+                icon: "🥬",
+                scientific: "Brassica napus var. pabularia",
+                content: `
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🌱</span> General Information</h3>
+                        <div class="section-content">
+                            <p><strong>Scientific Name:</strong> Brassica napus var. pabularia</p>
+                            <p><strong>Family:</strong> Brassicaceae (cabbage family)</p>
+                            <p><strong>Plant Type:</strong> Leafy green vegetable; biennial grown as annual</p>
+                            <p><strong>Origin:</strong> Russia and Siberia</p>
+                            <p><strong>Plant Height:</strong> 30–60 cm</p>
+                            <p><strong>Leaves:</strong> Tender leaves with striking purple veins, gray-green color</p>
+                            <p><strong>Flowers:</strong> Small, yellow, four-petaled</p>
+                            <p>Red Russian kale is a cold-hardy, nutrient-rich leafy green known for its tender leaves and striking purple veins. It has gained attention not only for its culinary and medicinal benefits but also for its role in space agriculture research.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🌾</span> 1. Agricultural Cycle</h3>
+                        <div class="section-content">
+                            <p><strong>Optimal Planting Season:</strong> Red Russian kale thrives in cooler temperatures and is typically planted in early spring or late summer. It can tolerate light frosts, which can enhance its flavor.</p>
+                            <p><strong>Soil Requirements:</strong> Prefers well-drained, fertile soil with a pH of 6.0–7.5. Organic compost is beneficial for optimal growth.</p>
+                            <p><strong>Growth Duration:</strong> From sowing to harvest, it takes approximately 50 days for mature leaves and about 25–30 days for baby greens.</p>
+                            <p><strong>Optimal Conditions:</strong> Full sun to partial shade, temperatures between 10°C and 20°C, with spacing of 18–24 inches between plants.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🗺️</span> 2. Growing Locations</h3>
+                        <div class="section-content">
+                            <p>Red Russian kale is cultivated worldwide, with significant production in North America (United States and Canada), Europe (United Kingdom, Germany, and Scandinavia), Asia (Japan and South Korea), and Australia in temperate zones.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🚀</span> 3. Scientific Uses & Space Research</h3>
+                        <div class="section-content">
+                            <ul>
+                                <li><strong>VEG-03 Experiments:</strong> Red Russian kale was grown aboard the International Space Station (ISS) as part of the Veggie Plant Chamber experiments to evaluate the feasibility of growing crops in microgravity environments</li>
+                                <li><strong>Microgravity Transplant Studies:</strong> NASA tested transplanting Red Russian kale in microgravity conditions to understand plant responses to space travel</li>
+                                <li><strong>Nutritional Analysis:</strong> Studies show that Red Russian kale maintains its nutritional value, including high levels of vitamins A, C, and K, when grown in space environments</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">🩺</span> 4. Medicinal Benefits</h3>
+                        <div class="section-content">
+                            <h4>1. Rich in Nutrients</h4>
+                            <ul>
+                                <li>High in vitamins A, C, and K, as well as calcium, iron, and potassium</li>
+                                <li>Excellent source of essential vitamins and minerals</li>
+                            </ul>
+                            
+                            <h4>2. Antioxidant Properties</h4>
+                            <ul>
+                                <li>Contains compounds that help reduce oxidative stress and inflammation</li>
+                                <li>Supports overall cellular health</li>
+                            </ul>
+                            
+                            <h4>3. Bone Health</h4>
+                            <ul>
+                                <li>Calcium and vitamin K contribute to maintaining strong bones</li>
+                                <li>Supports bone density and strength</li>
+                            </ul>
+                            
+                            <h4>4. Heart Health</h4>
+                            <ul>
+                                <li>High fiber content supports cardiovascular health</li>
+                                <li>May help maintain healthy cholesterol levels</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">📊</span> 5. Nutritional Composition (per 100 g)</h3>
+                        <div class="section-content">
+                            <table class="info-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nutrient</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Calories</td>
+                                        <td>25-30 kcal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Protein</td>
+                                        <td>2-3 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Carbohydrates</td>
+                                        <td>4-5 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fiber</td>
+                                        <td>2 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vitamin A</td>
+                                        <td>High content</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vitamin C</td>
+                                        <td>High content</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vitamin K</td>
+                                        <td>High content</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Calcium</td>
+                                        <td>High content</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Iron</td>
+                                        <td>High content</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Potassium</td>
+                                        <td>High content</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-section">
+                        <h3 class="section-title"><span class="icon">📝</span> 6. Summary</h3>
+                        <div class="section-content">
+                            <p>Red Russian kale (Brassica napus var. pabularia) is a versatile leafy green with significant agricultural, nutritional, and scientific importance. Its cultivation supports global food security, while its bioactive compounds offer various health benefits. Ongoing research, including NASA's studies, continues to explore its potential in sustainable agriculture and space exploration.</p>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // Plant Filtering
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active from all buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active to clicked button
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                const plants = document.querySelectorAll('.plant-card');
+                
+                plants.forEach(plant => {
+                    if (filter === 'all' || plant.getAttribute('data-category') === filter) {
+                        plant.style.display = 'block';
+                    } else {
+                        plant.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Open Details Modal
+        document.querySelectorAll('.view-details').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const plantId = this.getAttribute('data-plant');
+                const plantData = plantsData[plantId];
+                
+                if (plantData) {
+                    document.getElementById('modalPlantName').innerHTML = `<span class="plant-icon">${plantData.icon}</span> ${plantData.name}`;
+                    document.getElementById('modalPlantContent').innerHTML = plantData.content;
+                    document.getElementById('plantModal').style.display = 'block';
+                }
+            });
+        });
+
+        // Close Details Modal
+        document.querySelector('.close-modal').addEventListener('click', function() {
+            document.getElementById('plantModal').style.display = 'none';
+        });
+
+        // Close Modal when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target === document.getElementById('plantModal')) {
+                document.getElementById('plantModal').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
